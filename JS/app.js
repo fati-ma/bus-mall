@@ -29,15 +29,31 @@ for (var i = 0; i < names.length; i++) {
 
 console.log(Product.all);
 
-
 var leftImage, middleImage, rightImage;
-var imgs = ['leftImage', 'middleImage', 'rightImage'];
+var indecies = [];
+var products = [];
 
 function render() {
+    
+  var indecies = []; //array to store unique indecies for the images 
+  while (indecies.length < 3) { //3 images max
+  var randNum = Math.floor(Math.random() * Product.all.length);
+  if (indecies.indexOf(randNum) < 0) { //making sure random number isn't in the indecies array yet
+  indecies.push(randNum); //store the number into indecies array
+  }
+}
+for (var i = 0; i < indecies.length; i++) { //loop through indecies array elements
+  products[i] = Product.all[indecies[i]];
+}
 
-  leftProduct = Product.all[randomNumber(0, Product.all.length - 1)];
-  middleProduct = Product.all[randomNumber(0, Product.all.length - 1)];
-  rightProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+   leftProduct = products[0];
+   middleProduct = products[1];
+   rightProduct = products[2];
+
+  // leftProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  // middleProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  // rightProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  
   console.log(leftProduct);
   console.log(middleProduct);
   console.log(rightProduct);
@@ -55,36 +71,10 @@ function render() {
   rightImage.setAttribute('title', rightProduct.productName);
 
 
-  // for (i = 0; i < 3; i++) {
-  //   var random_number = Math.floor(Math.random() * Product.all.length);
-
-  //   console.log('Indices before render = ' + Product.indicesUsed);
-  //   console.log('random: ' + random_number);
-  //   if (Product.indicesUsed.includes(random_number)) {
-  //     console.log('Duplicate found on image ' + i);
-  //     i--;
-  //   } else { 
-  //     document.getElementById(Product.imgs[i]).src =
-  //       Product.all[random_number].imagePath;
-  //     document.getElementById(Product.imgs[i]).alt =
-  //       Product.all[random_number].pName;
-  //     Product.all[random_number].viewed++;
-  //     Product.indicesUsed.push(random_number);
-  //     console.log('Indices after render = ' + Product.indicesUsed);
-  //   }
-  // }
-
-  // if (e) {
-  //   Product.indicesUsed.shift();
-  //   Product.indicesUsed.shift();
-  //   Product.indicesUsed.shift();
-  // }
-
 }
 
 function renderSummary() {
   imagesSection.removeEventListener('click', handleClickonProduct);
-  console.log('you voted 25 times already!!');
 
   var ulE1 = document.getElementById('finalResults');
   for (var i = 0; i < Product.all.length; i++) {
@@ -93,9 +83,6 @@ function renderSummary() {
 
     liE.textContent = `${Product.all[i].productName} has ${Product.all[i].clicks} clicks and ${Product.all[i].views} views`;
   }
-
-
-
 }
 render();
 
@@ -135,9 +122,9 @@ function handleClickonProduct(event) {
 
 }
 
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
+// function randomNumber(min, max) {
+//   return Math.floor(Math.random() * (max - min + 1)) + min;
+// }
 
 
 
