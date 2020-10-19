@@ -18,11 +18,11 @@ Product.all = [];
 function Product(pName) {
   this.productName = pName;
 
-  if (pName == 'usb'){
+  if (pName == 'usb') {
     this.imagePath = `img/${pName}.gif`;
-  } else if (pName == 'sweep'){
+  } else if (pName == 'sweep') {
     this.imagePath = `img/${pName}.png`;
-  } else{
+  } else {
     this.imagePath = `img/${pName}.jpg`;
   }
 
@@ -73,19 +73,30 @@ function render() {
   // leftProduct = products[0];
   // middleProduct = products[1];
   // rightProduct = products[2];
-  
+
+
+  // function randomNumber(min, max) {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
+
+  // do {
+  //   leftProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  //   middleProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  //   rightProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  // }
+  // while (leftProduct === rightProduct || middleProduct === rightProduct || middleProduct === leftProduct)
+
+
   var randomLeft = Math.floor(Math.random() * Product.all.length);
   var randomMiddle = Math.floor(Math.random() * Product.all.length);
   var randomRight = Math.floor(Math.random() * Product.all.length);
-  
+
   while (randomLeft === randomRight || randomMiddle === randomRight || randomMiddle === randomLeft || alreadyDisplayed.includes(randomLeft) || alreadyDisplayed.includes(randomMiddle) || alreadyDisplayed.includes(randomRight)) {
-
-
     randomLeft = Math.floor(Math.random() * Product.all.length);
     randomMiddle = Math.floor(Math.random() * Product.all.length);
     randomRight = Math.floor(Math.random() * Product.all.length);
   }
-  
+
 
   leftProduct = Product.all[randomLeft];
   middleProduct = Product.all[randomMiddle];
@@ -112,17 +123,19 @@ function render() {
   alreadyDisplayed[2] = randomRight;
 }
 
+
 function renderSummary() {
   imagesSection.removeEventListener('click', handleClickonProduct);
 
-  var ulE1 = document.getElementById('finalResults');
+  var ulE1 = document.getElementById('resultsList');
   for (var i = 0; i < Product.all.length; i++) {
     var liE = document.createElement('li');
     ulE1.appendChild(liE);
-
+    
     liE.textContent = `${Product.all[i].productName} has ${Product.all[i].clicks} clicks and ${Product.all[i].views} views`;
   }
 }
+
 render();
 
 var totalClicks = 0;
@@ -136,8 +149,10 @@ function handleClickonProduct(event) {
 
   if (totalClicks < 25) {
     if (event.target.id !== 'imagesSection') {
+
       totalClicks++;
       console.log(totalClicks);
+
       rightProduct.views++;
       middleProduct.views++;
       leftProduct.views++;
@@ -162,23 +177,24 @@ function handleClickonProduct(event) {
 
 }
 
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 function createChartSummary() {
+
   var productsArr = [];
   for (var i = 0; i < Product.all.length; i++) {
     productsArr.push(Product.all[i].productName);
   }
+
   var clicksArr = [];
   for (var i = 0; i < Product.all.length; i++) {
     clicksArr.push(Product.all[i].clicks);
   }
+
   var viewsArr = [];
   for (var i = 0; i < Product.all.length; i++) {
     viewsArr.push(Product.all[i].views);
   }
+
   var ctx = document.getElementById('barChart').getContext('2d');
   var barChart = new Chart(ctx, {
     type: 'bar',
