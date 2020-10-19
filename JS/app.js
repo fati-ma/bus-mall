@@ -33,27 +33,42 @@ var leftImage, middleImage, rightImage;
 var indecies = [];
 var products = [];
 
+var alreadyDisplayed = [];
+
 function render() {
-    
-  var indecies = []; //array to store unique indecies for the images 
-  while (indecies.length < 3) { //3 images max
-  var randNum = Math.floor(Math.random() * Product.all.length);
-  if (indecies.indexOf(randNum) < 0) { //making sure random number isn't in the indecies array yet
-  indecies.push(randNum); //store the number into indecies array
-  }
-}
-for (var i = 0; i < indecies.length; i++) { //loop through indecies array elements
-  products[i] = Product.all[indecies[i]];
-}
 
-   leftProduct = products[0];
-   middleProduct = products[1];
-   rightProduct = products[2];
+  // var indecies = []; //array to store unique indecies for the images 
+  // while (indecies.length < 3) { //3 images max
+  //   var randNum = Math.floor(Math.random() * Product.all.length);
+  //   if (indecies.indexOf(randNum) < 0) { //making sure random number isn't in the indecies array yet
+  //     indecies.push(randNum); //store the number into indecies array
+  //   }
+  // }
+  // for (var i = 0; i < indecies.length; i++) { //loop through indecies array elements
+  //   products[i] = Product.all[indecies[i]];
+  // }
 
-  // leftProduct = Product.all[randomNumber(0, Product.all.length - 1)];
-  // middleProduct = Product.all[randomNumber(0, Product.all.length - 1)];
-  // rightProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  // leftProduct = products[0];
+  // middleProduct = products[1];
+  // rightProduct = products[2];
   
+  var randomLeft = Math.floor(Math.random() * Product.all.length);
+  var randomMiddle = Math.floor(Math.random() * Product.all.length);
+  var randomRight = Math.floor(Math.random() * Product.all.length);
+  
+  while (randomLeft === randomRight || randomMiddle === randomRight || randomMiddle === randomLeft || alreadyDisplayed.includes(randomLeft) || alreadyDisplayed.includes(randomMiddle) || alreadyDisplayed.includes(randomRight)) {
+
+
+    randomLeft = Math.floor(Math.random() * Product.all.length);
+    randomMiddle = Math.floor(Math.random() * Product.all.length);
+    randomRight = Math.floor(Math.random() * Product.all.length);
+  }
+  
+
+  leftProduct = Product.all[randomLeft];
+  middleProduct = Product.all[randomMiddle];
+  rightProduct = Product.all[randomRight];
+
   console.log(leftProduct);
   console.log(middleProduct);
   console.log(rightProduct);
@@ -70,7 +85,9 @@ for (var i = 0; i < indecies.length; i++) { //loop through indecies array elemen
   rightImage.setAttribute('alt', rightProduct.productName);
   rightImage.setAttribute('title', rightProduct.productName);
 
-
+  alreadyDisplayed[0] = randomLeft;
+  alreadyDisplayed[1] = randomMiddle;
+  alreadyDisplayed[2] = randomRight;
 }
 
 function renderSummary() {
@@ -117,14 +134,64 @@ function handleClickonProduct(event) {
     }
   } else if (totalClicks === 25) {
     document.getElementById("results").addEventListener("click", renderSummary);
+    document.getElementById("results").addEventListener("click", createChartSummary);
     console.log(totalClicks);
   }
 
 }
 
-// function randomNumber(min, max) {
-//   return Math.floor(Math.random() * (max - min + 1)) + min;
-// }
+function randomNumber(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function createChartSummary() {
+  var productsArr = [];
+  for (var i = 0; i < Product.all.length; i++) {
+    productsArr.push(Product.all[i].productName);
+  }
+  var clicksArr = [];
+  for (var i = 0; i < Product.all.length; i++) {
+    clicksArr.push(Product.all[i].clicks);
+  }
+  var viewsArr = [];
+  for (var i = 0; i < Product.all.length; i++) {
+    viewsArr.push(Product.all[i].views);
+  }
+  var ctx = document.getElementById('barChart').getContext('2d');
+  var barChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: productsArr,
+      datasets: [{
+        label: '# of clicks',
+        data: clicksArr,
+        backgroundColor:
+          'rgba(54, 162, 235, 0.2)',
+        borderColor:
+          'rgba(54, 162, 235, 1)',
+        borderWidth: 2
+      },
+      {
+        label: '# of Views',
+        data: viewsArr,
+        backgroundColor:
+          'rgba(255, 99, 132, 0.2)',
+        borderColor:
+          'rgba(255, 99, 132, 1)',
+        borderWidth: 3
+      }]
+    },
+    options: {
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true
+          }
+        }]
+      }
+    }
+  });
+}
 
 
 
