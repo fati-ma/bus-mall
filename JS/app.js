@@ -1,13 +1,13 @@
 // 'use strict';
 
-var names = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg',
-  'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg',
-  'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg',
-  'unicorn.jpg', 'usb.gif', 'water-can.jpg', 'wine-glass.jpg'];
+var names = ['bag', 'banana', 'bathroom', 'boots', 'breakfast',
+  'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon',
+  'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun',
+  'unicorn', 'usb', 'water-can', 'wine-glass'];
 
 var leftImage = document.getElementById('leftImage');
 var middleImage = document.getElementById('middleImage');
-var rightImage = document.querySelector('#rightImage');
+var rightImage = document.getElementById('rightImage');
 
 console.log(leftImage);
 console.log(middleImage);
@@ -17,15 +17,37 @@ Product.all = [];
 
 function Product(pName) {
   this.productName = pName;
-  this.imagePath = `img/${pName}`;
+
+  if (pName == 'usb'){
+    this.imagePath = `img/${pName}.gif`;
+  } else if (pName == 'sweep'){
+    this.imagePath = `img/${pName}.png`;
+  } else{
+    this.imagePath = `img/${pName}.jpg`;
+  }
+
   this.views = 0;
   this.clicks = 0;
+
   Product.all.push(this);
 }
 
 for (var i = 0; i < names.length; i++) {
   new Product(names[i]);
+  // var product = new Product(names[i]);
+  // product.getImagePath();
+
 }
+
+// Product.prototype.getImagePath = function(){
+//   if (this.productName == 'usb'){
+//     this.imagePath = `img/${this.productName}.gif`;
+//   } else if (this.productName == 'sweep'){
+//     this.imagePath = `img/${this.productName}.png`;
+//   } else{
+//     this.imagePath = `img/${this.productName}.jpg`;
+//   }
+// }
 
 console.log(Product.all);
 
