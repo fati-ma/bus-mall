@@ -162,6 +162,8 @@ function handleClickonProduct(event) {
 
 
 
+
+
 // 'use strict';
 
 // var imageSelectionOne = document.getElementById('imageSelectionOne');
