@@ -181,19 +181,14 @@ function handleClickonProduct(event) {
 function createChartSummary() {
 
   var productsArr = [];
-  for (var i = 0; i < Product.all.length; i++) {
-    productsArr.push(Product.all[i].productName);
-  }
-
   var clicksArr = [];
-  for (var i = 0; i < Product.all.length; i++) {
-    clicksArr.push(Product.all[i].clicks);
-  }
-
   var viewsArr = [];
   for (var i = 0; i < Product.all.length; i++) {
+    productsArr.push(Product.all[i].productName);
+    clicksArr.push(Product.all[i].clicks);
     viewsArr.push(Product.all[i].views);
   }
+
 
   var ctx = document.getElementById('barChart').getContext('2d');
   var barChart = new Chart(ctx, {
