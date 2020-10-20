@@ -1,13 +1,13 @@
 // 'use strict';
 
-var names = ['bag.jpg', 'banana.jpg', 'bathroom.jpg', 'boots.jpg', 'breakfast.jpg',
-  'bubblegum.jpg', 'chair.jpg', 'cthulhu.jpg', 'dog-duck.jpg', 'dragon.jpg',
-  'pen.jpg', 'pet-sweep.jpg', 'scissors.jpg', 'shark.jpg', 'sweep.png', 'tauntaun.jpg',
-  'unicorn.jpg', 'usb.gif', 'water-can.jpg', 'wine-glass.jpg'];
+var names = ['bag', 'banana', 'bathroom', 'boots', 'breakfast',
+  'bubblegum', 'chair', 'cthulhu', 'dog-duck', 'dragon',
+  'pen', 'pet-sweep', 'scissors', 'shark', 'sweep', 'tauntaun',
+  'unicorn', 'usb', 'water-can', 'wine-glass'];
 
 var leftImage = document.getElementById('leftImage');
 var middleImage = document.getElementById('middleImage');
-var rightImage = document.querySelector('#rightImage');
+var rightImage = document.getElementById('rightImage');
 
 console.log(leftImage);
 console.log(middleImage);
@@ -17,21 +17,46 @@ Product.all = [];
 
 function Product(pName) {
   this.productName = pName;
-  this.imagePath = `img/${pName}`;
+
+  if (pName == 'usb') {
+    this.imagePath = `img/${pName}.gif`;
+  } else if (pName == 'sweep') {
+    this.imagePath = `img/${pName}.png`;
+  } else {
+    this.imagePath = `img/${pName}.jpg`;
+  }
+
   this.views = 0;
   this.clicks = 0;
+
   Product.all.push(this);
 }
 
 for (var i = 0; i < names.length; i++) {
   new Product(names[i]);
+  localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
+
+  
+  // var product = new Product(names[i]);
+  // product.getImagePath();
+
 }
+
+// Product.prototype.getImagePath = function(){
+//   if (this.productName == 'usb'){
+//     this.imagePath = `img/${this.productName}.gif`;
+//   } else if (this.productName == 'sweep'){
+//     this.imagePath = `img/${this.productName}.png`;
+//   } else{
+//     this.imagePath = `img/${this.productName}.jpg`;
+//   }
+// }
 
 console.log(Product.all);
 
 var leftImage, middleImage, rightImage;
-var indecies = [];
-var products = [];
+// var indecies = [];
+// var products = [];
 
 var alreadyDisplayed = [];
 
@@ -51,19 +76,30 @@ function render() {
   // leftProduct = products[0];
   // middleProduct = products[1];
   // rightProduct = products[2];
-  
+
+
+  // function randomNumber(min, max) {
+  //   return Math.floor(Math.random() * (max - min + 1)) + min;
+  // }
+
+  // do {
+  //   leftProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  //   middleProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  //   rightProduct = Product.all[randomNumber(0, Product.all.length - 1)];
+  // }
+  // while (leftProduct === rightProduct || middleProduct === rightProduct || middleProduct === leftProduct)
+
+
   var randomLeft = Math.floor(Math.random() * Product.all.length);
   var randomMiddle = Math.floor(Math.random() * Product.all.length);
   var randomRight = Math.floor(Math.random() * Product.all.length);
-  
+
   while (randomLeft === randomRight || randomMiddle === randomRight || randomMiddle === randomLeft || alreadyDisplayed.includes(randomLeft) || alreadyDisplayed.includes(randomMiddle) || alreadyDisplayed.includes(randomRight)) {
-
-
     randomLeft = Math.floor(Math.random() * Product.all.length);
     randomMiddle = Math.floor(Math.random() * Product.all.length);
     randomRight = Math.floor(Math.random() * Product.all.length);
   }
-  
+
 
   leftProduct = Product.all[randomLeft];
   middleProduct = Product.all[randomMiddle];
@@ -88,19 +124,25 @@ function render() {
   alreadyDisplayed[0] = randomLeft;
   alreadyDisplayed[1] = randomMiddle;
   alreadyDisplayed[2] = randomRight;
+
+  // sendToStorage();
+  // localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
+
 }
+
 
 function renderSummary() {
   imagesSection.removeEventListener('click', handleClickonProduct);
 
-  var ulE1 = document.getElementById('finalResults');
+  var ulE1 = document.getElementById('resultsList');
   for (var i = 0; i < Product.all.length; i++) {
     var liE = document.createElement('li');
     ulE1.appendChild(liE);
-
+    
     liE.textContent = `${Product.all[i].productName} has ${Product.all[i].clicks} clicks and ${Product.all[i].views} views`;
   }
 }
+
 render();
 
 var totalClicks = 0;
@@ -112,10 +154,12 @@ function handleClickonProduct(event) {
 
   console.log(event.target.id);
 
-  if (totalClicks < 25) {
+  if (totalClicks < 10) {
     if (event.target.id !== 'imagesSection') {
+
       totalClicks++;
       console.log(totalClicks);
+
       rightProduct.views++;
       middleProduct.views++;
       leftProduct.views++;
@@ -129,34 +173,55 @@ function handleClickonProduct(event) {
       if (event.target.id === 'rightImage') {
         rightProduct.clicks++;
       }
-
+      
+      localStorage.setItem('Number of clicks', JSON.stringify(totalClicks));
       render();
     }
-  } else if (totalClicks === 25) {
+  } else if (totalClicks === 10) {
     document.getElementById("results").addEventListener("click", renderSummary);
     document.getElementById("results").addEventListener("click", createChartSummary);
     console.log(totalClicks);
+    sendToStorage();
   }
+  
+}
+
+function sendToStorage(){
+  // var totalNumOfClicks = JSON.stringify(totalClicks);
+  // localStorage.setItem('Number of clicks', totalNumOfClicks);
+
+  // var productsArrLS = JSON.stringify(Product.all);
+  // localStorage.setItem('Products Array of objects', productsArrLS);
+
+  // localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
 
 }
 
-function randomNumber(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
+function getFromStorage(){
+  var clicksTotalNumber = localStorage.getItem('Number of clicks');
+  totalClicks= JSON.parse(clicksTotalNumber);
+  
+  if(productsArrLS){
+    Product.all = JSON.parse(localStorage.getItem('Products Array of objects'));
+    render();
+  }
+  // render();
 }
+
+getFromStorage();
 
 function createChartSummary() {
+
   var productsArr = [];
-  for (var i = 0; i < Product.all.length; i++) {
-    productsArr.push(Product.all[i].productName);
-  }
   var clicksArr = [];
-  for (var i = 0; i < Product.all.length; i++) {
-    clicksArr.push(Product.all[i].clicks);
-  }
   var viewsArr = [];
   for (var i = 0; i < Product.all.length; i++) {
+    productsArr.push(Product.all[i].productName);
+    clicksArr.push(Product.all[i].clicks);
     viewsArr.push(Product.all[i].views);
   }
+
+
   var ctx = document.getElementById('barChart').getContext('2d');
   var barChart = new Chart(ctx, {
     type: 'bar',
@@ -228,128 +293,3 @@ function createChartSummary() {
 
 
 
-
-
-
-// 'use strict';
-
-// var imageSelectionOne = document.getElementById('imageSelectionOne');
-// var imageSelectionTwo = document.getElementById('imageSelectionTwo');
-// var imageSelectionThree = document.getElementById('imageSelectionThree');
-// var listOfData = document.getElementById('listOfData');
-
-
-// var imageArray=[];
-// var maxClicks = 25;
-// var totalClicks = 0;
-// var imageUsed = [1, 2, 3, 4, 5, 6];
-// var showingList = false;
-
-
-// // Constructor
-// function ItemImage(name){
-//   this.name = name;
-//   this.filepath = `img/${name}.jpg`;
-//   this.timesShown = 0;
-//   this.timesSelected = 0;
-//   imageArray.push(this);
-// }
-
-// // New Instances
-// new ItemImage('bag');
-// new ItemImage('banana');
-// new ItemImage('bathroom');
-// new ItemImage('boots');
-// new ItemImage('breakfast');
-// new ItemImage('bubblegum');
-// new ItemImage('chair');
-// new ItemImage('cthulhu');
-// new ItemImage('dog-duck');
-// new ItemImage('dragon');
-// new ItemImage('pen');
-// new ItemImage('pet-sweep');
-// new ItemImage('scissors');
-// new ItemImage('shark');
-// // new ItemImage('sweep');
-// new ItemImage('tauntaun');
-// new ItemImage('unicorn');
-// // new ItemImage('usb');
-// new ItemImage('water-can');
-// new ItemImage('wine-glass');
-
-// // Function to append list to the DOM
-// function makeList() {
-//   if (!showingList) {
-
-//     var ulEl = document.createElement('ul');
-
-//     for (var i=0; i<imageArray.length; i++){
-//       var liEl = document.createElement('li');
-//       liEl.textContent = imageArray[i].name + ' was clicked ' + imageArray[i].timesSelected + ' times';
-//       ulEl.appendChild(liEl);
-//     }
-
-//     listOfData.appendChild(ulEl);
-//     showingList = true;
-
-//     imageSelectionOne.removeEventListener('click', handleImageSelection);
-//     imageSelectionTwo.removeEventListener('click', handleImageSelection);
-//     imageSelectionThree.removeEventListener('click', handleImageSelection);
-//   }
-// }
-
-
-
-
-// // Displays images
-// function showRandomImage(socketEl){
-//   // generate a random number 0-7
-//   var randomIndex = Math.floor(Math.random() * imageArray.length);
-//   while (imageUsed.includes(randomIndex)){
-//     randomIndex = Math.floor(Math.random() * imageArray.length);
-//   }
-//   // assign src
-//   socketEl.src = imageArray[randomIndex].filepath;
-//   // assign title
-//   socketEl.title = imageArray[randomIndex].name;
-//   // assign the alt
-//   socketEl.alt = imageArray[randomIndex].name;
-//   // increment times shown
-//   imageArray[randomIndex].timesShown++;
-//   // Replaces items in used image array
-//   imageUsed.shift();
-//   imageUsed.push(randomIndex);
-// }
-
-
-// // Event handler
-// function handleImageSelection(event){
-//   console.log(event.target.alt);
-//   totalClicks++;
-
-//   for (var i=0; i < imageArray.length; i++) {
-//     if(event.target.alt === imageArray[i].name) {
-//       imageArray[i].timesSelected++;
-//     }
-//   }
-
-//   if (totalClicks < maxClicks) {
-//     showRandomImage(imageSelectionOne);
-//     showRandomImage(imageSelectionTwo);
-//     showRandomImage(imageSelectionThree);
-//   } else {
-//     makeList();
-//   }
-// }
-
-
-// // Event listener
-// imageSelectionOne.addEventListener('click', handleImageSelection);
-// imageSelectionTwo.addEventListener('click', handleImageSelection);
-// imageSelectionThree.addEventListener('click', handleImageSelection);
-
-
-// // Function Calls
-// showRandomImage(imageSelectionOne);
-// showRandomImage(imageSelectionTwo);
-// showRandomImage(imageSelectionThree);
