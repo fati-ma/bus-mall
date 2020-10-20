@@ -34,6 +34,9 @@ function Product(pName) {
 
 for (var i = 0; i < names.length; i++) {
   new Product(names[i]);
+  localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
+
+  
   // var product = new Product(names[i]);
   // product.getImagePath();
 
@@ -121,6 +124,10 @@ function render() {
   alreadyDisplayed[0] = randomLeft;
   alreadyDisplayed[1] = randomMiddle;
   alreadyDisplayed[2] = randomRight;
+
+  // sendToStorage();
+  // localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
+
 }
 
 
@@ -147,7 +154,7 @@ function handleClickonProduct(event) {
 
   console.log(event.target.id);
 
-  if (totalClicks < 25) {
+  if (totalClicks < 10) {
     if (event.target.id !== 'imagesSection') {
 
       totalClicks++;
@@ -166,17 +173,42 @@ function handleClickonProduct(event) {
       if (event.target.id === 'rightImage') {
         rightProduct.clicks++;
       }
-
+      
+      localStorage.setItem('Number of clicks', JSON.stringify(totalClicks));
       render();
     }
-  } else if (totalClicks === 25) {
+  } else if (totalClicks === 10) {
     document.getElementById("results").addEventListener("click", renderSummary);
     document.getElementById("results").addEventListener("click", createChartSummary);
     console.log(totalClicks);
+    sendToStorage();
   }
+  
+}
+
+function sendToStorage(){
+  // var totalNumOfClicks = JSON.stringify(totalClicks);
+  // localStorage.setItem('Number of clicks', totalNumOfClicks);
+
+  // var productsArrLS = JSON.stringify(Product.all);
+  // localStorage.setItem('Products Array of objects', productsArrLS);
+
+  // localStorage.setItem('Products Array of objects', JSON.stringify(Product.all));
 
 }
 
+function getFromStorage(){
+  var clicksTotalNumber = localStorage.getItem('Number of clicks');
+  totalClicks= JSON.parse(clicksTotalNumber);
+  
+  if(productsArrLS){
+    Product.all = JSON.parse(localStorage.getItem('Products Array of objects'));
+    render();
+  }
+  // render();
+}
+
+getFromStorage();
 
 function createChartSummary() {
 
